@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ====== CUSTOM THEME VARIABLES ====== */
+@theme {
+  --font-bebas: "Bebas Neue", sans-serif;
+
+  /* ====== CORE COLORS ====== */
+  --color-background: #0a0a0f; /* Dark background for the main body and sections */
+  --color-foreground: #eaeaea; /* Light color suitable for text on dark backgrounds */
+  --color-card: #13131a; /* Slightly lighter than background, for cards, modals, or panels */
+  --color-card-foreground: #ffffff; /* Text on cards or panels */
+  --color-popover: #191923; /* Background for popovers, dropdowns, tooltips */
+  --color-popover-foreground: #fafafa; /* Text inside popovers or dropdowns */
+
+  /* ====== BRAND ACCENTS ====== */
+  --color-primary: #00e0ff; /* Main accent color, e.g., buttons, links, highlights */
+  --color-primary-foreground: #0a0a0f; /* Text color on primary-colored backgrounds */
+  
+  --color-secondary: #ff007f; /* Secondary accent color for buttons, badges, hover states */
+  --color-secondary-foreground: #0a0a0f; /* Text on secondary colored backgrounds */
+  
+  --color-accent: #9d4edd; /* Used for subtle highlights or decorative elements */
+  --color-accent-foreground: #ffffff; /* Text on accent-colored elements */
+  
+  --color-muted: #202330; /* For less prominent backgrounds, e.g., sidebar or footer */
+  --color-muted-foreground: #9aa0b2; /* Text on muted backgrounds */
+  
+  --color-destructive: #ff4c4c; /* For warnings, errors, delete buttons */
+  --color-destructive-foreground: #ffffff; /* Text on destructive buttons */
+
+  /* ====== UI ELEMENTS ====== */
+  --color-border: #2a2d3a; /* Borders for cards, inputs, modals */
+  --color-input: #2a2d3a; /* Input background color */
+  --color-ring: #00e0ff; /* Focus ring / outline color */
+  --color-radius: 0.75rem; /* Rounded corners for cards, buttons, inputs */
+
+  /* ====== GRADIENTS ====== */
+  --gradient-primary: linear-gradient(135deg, #00e0ff 0%, #ff007f 100%); /* Gradient for buttons, highlights, headings */
+  --gradient-dark: linear-gradient(180deg, #0a0a0f 0%, #12121a 100%); /* Main background gradient if needed */
+  --gradient-card: linear-gradient(145deg, #16161e 0%, #0d0d14 100%); /* Card backgrounds or popover gradients */
+
+  /* ====== SHADOWS ====== */
+  --shadow-neon: 0 0 20px #00e0ff40; /* Soft neon glow for interactive elements */
+  --shadow-neon-hover: 0 0 30px #00e0ff80, 0 0 60px #ff007f40; /* Hover glow */
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.6); /* Subtle card shadow */
+
+  /* ====== ANIMATIONS ====== */
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); /* Smooth transition for hover/focus effects */
+}
+
+/* ====== BASE STYLES ====== */
+@layer base {
+  body {
+    @apply bg-background text-foreground
+    /* transition: var(--transition-smooth); */
+  }
+}
+
+/* ====== UTILITIES ====== */
+@layer utilities {
+   .bebas-neue-regular {
+    font-family: "Bebas Neue", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  .font-Agbalumo {
+    font-family: "Agbalumo", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+ .poppins-regular {
+  font-family: "Inter", sans-serif; /* or "Poppins", sans-serif */
+  font-weight: 300;                 /* Normal weight for description */
+  font-style: normal;
+  font-optical-sizing: auto;        /* Optional: improves readability at small sizes */
+}
+
+
+  .tagesschrift-regular {
+    font-family: "Tagesschrift", system-ui;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+
+  /* Hide scrollbar (useful for horizontal galleries or custom scroll areas) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .indigo-btn{
+    @apply  w-full lg:w-auto mb-1 flex items-center justify-center px-6 py-3 rounded-xl text-lg font-medium text-background bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:opacity-90 transition-opacity gap-2
+  }
+  .nav-link {
+    @apply relative px-3 py-2 text-sm font-medium transition-all text-muted-foreground;
+  }
+
+  .nav-link::after {
+    content: '';
+    @apply absolute left-0 bottom-0 h-[2px] transition-all bg-primary;
+    width: 0%;
+  }
+
+  .nav-link:hover {
+    @apply text-primary
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+ .input-box {
+    @apply w-full  rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200
+  }
+  /* Buttons */
+  .btn {
+    @apply px-4 lg:py-1 py-2 rounded-md lg:rounded-xl border text-primary border-primary transition-all duration-300 ease-in-out hover:bg-primary hover:text-primary-foreground;
+  }
+
+  .input-box {
+    @apply w-full py-2 px-4 rounded-xl bg-muted border border-border focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200
+  }
+
+  .gradient-background {
+    background: var(--gradient-primary);
+    transition: var(--transition-smooth);
+
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Neon glow effects */
+  .neon-glow {
+    box-shadow: var(--shadow-neon);
+    transition: var(--transition-smooth);
+  }
+
+  .neon-glow:hover {
+    box-shadow: var(--shadow-neon-hover);
+  }
+
+  /* Card hover effect */
+  .card-hover {
+    transition: var(--transition-smooth);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-neon-hover);
+  }
+
+}
