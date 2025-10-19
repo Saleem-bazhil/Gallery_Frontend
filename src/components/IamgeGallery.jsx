@@ -1,5 +1,12 @@
 import { useEffect, useState, useCallback } from "react";
-import { Search, Heart, Image as ImageIcon, Map, Upload } from "lucide-react";
+import {
+  Search,
+  Heart,
+  Image as ImageIcon,
+  Map,
+  Upload,
+  Trash,
+} from "lucide-react";
 import api from "../api.jsx";
 import { Link } from "react-router-dom";
 
@@ -22,7 +29,6 @@ export default function ImageGallery() {
       setPhotos(res.data);
       setCategories(extractCategories(res.data));
       console.log(res);
-      
     } catch (err) {
       console.error(err);
     }
@@ -65,6 +71,17 @@ export default function ImageGallery() {
     .filter((photo) =>
       photo.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+
+  const deletePhoto = async (id) => {
+    try {
+      await api.delete(`/gallery/photos/${id}/`);
+      setPhotos((prevPhotos) => prevPhotos.filter((photo) => photo.id !== id));
+      alert("Photo deleted successfully!");
+    } catch (error) {
+      console.error(error);
+      alert("Failed to delete photo!");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background lg:p-12">
@@ -144,7 +161,7 @@ export default function ImageGallery() {
               className="relative aspect-square rounded-xl overflow-hidden group hover:shadow-lg transition cursor-pointer"
               onClick={() => setSelectedPhoto(photo)}
             >
-              <img  
+              <img
                 src={photo.image}
                 alt={photo.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
@@ -152,17 +169,22 @@ export default function ImageGallery() {
               <div className="absolute bottom-0 w-full bg-black/40 text-white p-2 flex justify-between items-center">
                 <div>
                   <p className="font-semibold">{photo.name}</p>
-                  <p className="text-xs">{new Date(photo.date).toLocaleString()}</p>
+                  <p className="text-xs">
+                    {new Date(photo.date).toLocaleString()}
+                  </p>
                 </div>
                 <button
                   disabled={loadingId === photo.id}
-                  className="text-red-500 hover:text-red-400"
+                  className="text-red-500 hover:text-red-400 text-lg"
                   onClick={(e) => {
                     e.stopPropagation();
                     toggleFavorite(photo.id);
                   }}
                 >
                   {photo.is_favorite ? "★" : "☆"}
+                </button>
+                <button onClick={() => deletePhoto(photo.id)}>
+                  <Trash className="text-red-500" />
                 </button>
               </div>
             </div>
@@ -193,13 +215,17 @@ export default function ImageGallery() {
             </button>
             <div className="text-white mt-2 text-center">
               <p className="font-semibold">{selectedPhoto.name}</p>
-              <p className="text-sm">{new Date(selectedPhoto.date).toLocaleString()}</p>
+              <p className="text-sm">
+                {new Date(selectedPhoto.date).toLocaleString()}
+              </p>
               <button
                 disabled={loadingId === selectedPhoto.id}
                 className="mt-2 text-red-500 hover:text-red-400"
                 onClick={() => toggleFavorite(selectedPhoto.id)}
               >
-                {selectedPhoto.is_favorite ? "★ Remove Favorite" : "☆ Add Favorite"}
+                {selectedPhoto.is_favorite
+                  ? "★ Remove Favorite"
+                  : "☆ Add Favorite"}
               </button>
             </div>
           </div>
