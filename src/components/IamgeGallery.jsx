@@ -11,9 +11,16 @@ export default function ImageGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
 
+  // Safe helper to get full image URL
+  const getPhotoUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http://") || path.startsWith("https://")) {
+      return path; // already a full URL
+    }
+    return `${BASE_URL}${path}`; // prepend backend URL if relative path
+  };
 
-  const getPhotoUrl = (path) => `${BASE_URL}${path}`;
-
+  // Fetch photos from backend
   useEffect(() => {
     fetchPhotos();
   }, []);
@@ -37,7 +44,6 @@ export default function ImageGallery() {
     setLoadingId(photoId);
     try {
       const res = await api.post(`/gallery/photos/${photoId}/toggle-favorite/`);
-
       setPhotos((prev) =>
         prev.map((p) =>
           p.id === photoId ? { ...p, is_favorite: res.data.is_favorite } : p
@@ -91,7 +97,7 @@ export default function ImageGallery() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="input-box pl-10 pr-3 py-2 placeholder:text-sm"
-                placeholder=""
+                placeholder="Search photos"
               />
             </div>
           </div>
@@ -151,7 +157,6 @@ export default function ImageGallery() {
                 alt={photo.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
-              {/* Overlay with name, date, favorite */}
               <div className="absolute bottom-0 w-full bg-black/40 text-white p-2 flex justify-between items-center">
                 <div>
                   <p className="font-semibold">{photo.name}</p>
