@@ -30,7 +30,7 @@ function App() {
   }, [isLoggedIn]);
 
   return (
-    <BrowserRouter>
+    <>
       <WinterSnow />
       {isLoggedIn && <Navbar setIsLoggedIn={setIsLoggedIn} />}
 
@@ -69,7 +69,7 @@ function App() {
       </Routes>
 
       <Footer />
-    </BrowserRouter>
+      </>
   );
 }
 
