@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Search, Heart, Image as ImageIcon, Map, Upload } from "lucide-react";
-import api from "../api.jsx";
+import api, { BASE_URL } from "../api.jsx"; // Make sure BASE_URL is exported from api.js
 import { Link } from "react-router-dom";
 
 export default function ImageGallery() {
@@ -9,9 +9,11 @@ export default function ImageGallery() {
   const [activeTab, setActiveTab] = useState("all");
   const [categories, setCategories] = useState([]);
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-  const [loadingId, setLoadingId] = useState(null); // Loading state for toggle
+  const [loadingId, setLoadingId] = useState(null);
 
-  // Fetch photos on mount
+
+  const getPhotoUrl = (path) => `${BASE_URL}${path}`;
+
   useEffect(() => {
     fetchPhotos();
   }, []);
@@ -145,7 +147,7 @@ export default function ImageGallery() {
               onClick={() => setSelectedPhoto(photo)}
             >
               <img
-                src={photo.image}
+                src={getPhotoUrl(photo.image)}
                 alt={photo.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
@@ -184,7 +186,7 @@ export default function ImageGallery() {
         <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
           <div className="relative">
             <img
-              src={selectedPhoto.image}
+              src={getPhotoUrl(selectedPhoto.image)}
               alt={selectedPhoto.name}
               className="max-w-[90vw] max-h-[90vh] rounded-xl"
             />
@@ -204,7 +206,9 @@ export default function ImageGallery() {
                 className="mt-2 text-red-500 hover:text-red-400"
                 onClick={() => toggleFavorite(selectedPhoto.id)}
               >
-                {selectedPhoto.is_favorite ? "★ Remove Favorite" : "☆ Add Favorite"}
+                {selectedPhoto.is_favorite
+                  ? "★ Remove Favorite"
+                  : "☆ Add Favorite"}
               </button>
             </div>
           </div>
