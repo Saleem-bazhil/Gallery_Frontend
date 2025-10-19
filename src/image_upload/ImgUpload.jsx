@@ -25,12 +25,12 @@ const ImgUpload = () => {
   const validationSchema = Yup.object({
     name: Yup.string().required("Name is required"),
     category: Yup.string().required("Category is required"),
-    image: Yup.mixed().required("Image is required"),
+    img: Yup.mixed().required("Image is required"), 
   });
 
   const handleFileChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
-    setFieldValue("image", file);
+    setFieldValue("img", file);
 
     if (file) {
       const reader = new FileReader();
@@ -44,7 +44,7 @@ const ImgUpload = () => {
       const formData = new FormData();
       formData.append("name", values.name);
       formData.append("category", values.category);
-      formData.append("image", values.image);
+      formData.append("img", values.img);
 
       const response = await api.post("/gallery/photos/", formData, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -69,7 +69,7 @@ const ImgUpload = () => {
           </h2>
 
           <Formik
-            initialValues={{ name: "", category: "", image: null }}
+            initialValues={{ name: "", category: "", img: null }} 
             validationSchema={validationSchema}
             onSubmit={handleSubmit}
           >
@@ -115,7 +115,7 @@ const ImgUpload = () => {
                 <div>
                   <input
                     type="file"
-                    name="image"
+                    name="img" 
                     accept="image/*"
                     onChange={(event) => handleFileChange(event, setFieldValue)}
                     className="block w-full text-sm text-gray-500
@@ -127,7 +127,7 @@ const ImgUpload = () => {
                                cursor-pointer"
                   />
                   <ErrorMessage
-                    name="image"
+                    name="img"
                     component="p"
                     className="text-red-500 text-sm mt-1"
                   />
