@@ -37,9 +37,9 @@ const Login = ({ setIsLoggedIn }) => {
       resetForm();
       navigate("/home");
     } catch (err) {
-      const errorMsg = err.response?.data?.error || "Login failed";
+      const errorMsg = err.response?.data?.error || "Invalid Username or Password";
       setMessage(errorMsg);
-      alert(errorMsg);
+      alert("Invalid Username or Password");
     }
   };
 

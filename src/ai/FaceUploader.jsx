@@ -32,7 +32,7 @@ const FaceUploader = () => {
   };
 
   // Recursive function to capture & upload multiple frames
-  const captureAutomatically = async (username, total = 75, count = 0) => {
+  const captureAutomatically = async (username, total = 50, count = 0) => {
     if (count >= total) {
       setIsCapturing(false);
       setMessage(` Captured and uploaded ${total} faces for ${username}`);

@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Search, Heart, Image as ImageIcon, Map, Upload } from "lucide-react";
-import api, { BASE_URL } from "../api.jsx"; // Make sure BASE_URL is exported from api.js
+import api from "../api.jsx";
 import { Link } from "react-router-dom";
 
 export default function ImageGallery() {
@@ -11,33 +11,26 @@ export default function ImageGallery() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
   const [loadingId, setLoadingId] = useState(null);
 
-  // Safe helper to get full image URL
-  const getPhotoUrl = (path) => {
-    if (!path) return "";
-    if (path.startsWith("http://") || path.startsWith("https://")) {
-      return path; // already a full URL
-    }
-    return `${BASE_URL}${path}`; // prepend backend URL if relative path
-  };
+  // Extract unique categories
+  const extractCategories = (photos) =>
+    Array.from(new Set(photos.map((p) => p.category).filter(Boolean)));
 
-  // Fetch photos from backend
-  useEffect(() => {
-    fetchPhotos();
-  }, []);
-
-  const fetchPhotos = async () => {
+  // Fetch photos
+  const fetchPhotos = useCallback(async () => {
     try {
       const res = await api.get("/gallery/photos/");
       setPhotos(res.data);
-
-      const uniqueCategories = Array.from(
-        new Set(res.data.map((photo) => photo.category))
-      );
-      setCategories(uniqueCategories);
+      setCategories(extractCategories(res.data));
+      console.log(res);
+      
     } catch (err) {
       console.error(err);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchPhotos();
+  }, [fetchPhotos]);
 
   // Toggle favorite
   const toggleFavorite = async (photoId) => {
@@ -49,8 +42,7 @@ export default function ImageGallery() {
           p.id === photoId ? { ...p, is_favorite: res.data.is_favorite } : p
         )
       );
-
-      if (selectedPhoto && selectedPhoto.id === photoId) {
+      if (selectedPhoto?.id === photoId) {
         setSelectedPhoto((prev) => ({
           ...prev,
           is_favorite: res.data.is_favorite,
@@ -68,7 +60,7 @@ export default function ImageGallery() {
     .filter((photo) => {
       if (activeTab === "favorites") return photo.is_favorite;
       if (activeTab === "all") return true;
-      return activeTab === photo.category;
+      return photo.category === activeTab;
     })
     .filter((photo) =>
       photo.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -97,7 +89,6 @@ export default function ImageGallery() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="input-box pl-10 pr-3 py-2 placeholder:text-sm"
-                placeholder="Search photos"
               />
             </div>
           </div>
@@ -136,11 +127,12 @@ export default function ImageGallery() {
           </button>
         ))}
 
-        <button className="px-4 py-2 rounded-xl transition my-2 btn">
-          <Link to="/image-upload" className="flex items-center gap-2">
-            <Upload /> Upload Image
-          </Link>
-        </button>
+        <Link
+          to="/image-upload"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl transition my-2 btn"
+        >
+          <Upload /> Upload Image
+        </Link>
       </section>
 
       {/* Photo Grid */}
@@ -152,17 +144,15 @@ export default function ImageGallery() {
               className="relative aspect-square rounded-xl overflow-hidden group hover:shadow-lg transition cursor-pointer"
               onClick={() => setSelectedPhoto(photo)}
             >
-              <img
-                src={getPhotoUrl(photo.image)}
+              <img  
+                src={photo.image}
                 alt={photo.name}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform"
               />
               <div className="absolute bottom-0 w-full bg-black/40 text-white p-2 flex justify-between items-center">
                 <div>
                   <p className="font-semibold">{photo.name}</p>
-                  <p className="text-xs">
-                    {new Date(photo.date).toLocaleString()}
-                  </p>
+                  <p className="text-xs">{new Date(photo.date).toLocaleString()}</p>
                 </div>
                 <button
                   disabled={loadingId === photo.id}
@@ -191,7 +181,7 @@ export default function ImageGallery() {
         <div className="fixed inset-0 bg-black/80 flex justify-center items-center z-50">
           <div className="relative">
             <img
-              src={getPhotoUrl(selectedPhoto.image)}
+              src={selectedPhoto.image}
               alt={selectedPhoto.name}
               className="max-w-[90vw] max-h-[90vh] rounded-xl"
             />
@@ -203,17 +193,13 @@ export default function ImageGallery() {
             </button>
             <div className="text-white mt-2 text-center">
               <p className="font-semibold">{selectedPhoto.name}</p>
-              <p className="text-sm">
-                {new Date(selectedPhoto.date).toLocaleString()}
-              </p>
+              <p className="text-sm">{new Date(selectedPhoto.date).toLocaleString()}</p>
               <button
                 disabled={loadingId === selectedPhoto.id}
                 className="mt-2 text-red-500 hover:text-red-400"
                 onClick={() => toggleFavorite(selectedPhoto.id)}
               >
-                {selectedPhoto.is_favorite
-                  ? "★ Remove Favorite"
-                  : "☆ Add Favorite"}
+                {selectedPhoto.is_favorite ? "★ Remove Favorite" : "☆ Add Favorite"}
               </button>
             </div>
           </div>
